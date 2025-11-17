@@ -1289,10 +1289,6 @@ export default function App() {
             return <AdminDashboard />;
         }
     }
-    
-    if (!process.env.API_KEY && !localStorage.getItem('gemini_api_key')) {
-        return <ApiKeyWarning />;
-    }
 
     return (
         <ErrorBoundary>

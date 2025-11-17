@@ -1,36 +1,30 @@
-import React, { ErrorInfo, ReactNode } from 'react';
+import React from 'react';
 
-interface Props {
-  children: ReactNode;
+interface ErrorBoundaryProps {
+  children?: React.ReactNode;
 }
 
-interface State {
+interface ErrorBoundaryState {
   hasError: boolean;
 }
 
-export class ErrorBoundary extends React.Component<Props, State> {
-  // FIX: Initialize state as a class property. This resolves errors where TypeScript
-  // was unable to find the 'state' property on the component instance, which also
-  // caused cascading type errors in components that use ErrorBoundary.
-  public state: State = {
-    hasError: false,
+export class ErrorBoundary extends React.PureComponent<ErrorBoundaryProps, ErrorBoundaryState> {
+  override state: ErrorBoundaryState = {
+    hasError: false
   };
 
-  public static getDerivedStateFromError(_: Error): State {
-    // Update state so the next render shows the fallback UI.
+  static getDerivedStateFromError(): ErrorBoundaryState {
     return { hasError: true };
   }
 
-  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    // Log the error to an error reporting service
+  override componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
     console.error("ErrorBoundary caught an error:", error, errorInfo);
   }
 
-  public render() {
+  override render(): React.ReactNode {
     if (this.state.hasError) {
-      // A simple fallback UI with a reload button.
       return (
-         <div className="flex items-center justify-center h-screen bg-[var(--bg-primary)] text-white p-4">
+        <div className="flex items-center justify-center h-screen bg-[var(--bg-primary)] text-white p-4">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-red-400">Something went wrong.</h1>
             <p className="text-gray-400 mt-2">Please refresh the page to continue.</p>
